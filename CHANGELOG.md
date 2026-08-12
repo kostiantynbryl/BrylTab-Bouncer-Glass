@@ -2,6 +2,16 @@
 
 All notable changes to BrylTab Bouncer Glass are documented here.
 
+## 0.1.3 — 2026-08-12
+
+### Fixed
+
+- Preserve the final `KeyguardRootView` alpha while the primary bouncer is active, at the binder collector that actually calls `View.setAlpha()`.
+- Track bouncer lifetime through `KeyguardSecurityContainerController.onResume()` / `onPause()` so normal unlock transitions are restored afterwards.
+- Temporarily render `WallpaperManager.FLAG_LOCK` on the keyguard root while PIN is shown, instead of exposing the home wallpaper through the transparent bouncer.
+- Restore the original keyguard-root background when the bouncer pauses.
+- Add targeted diagnostics for root capture, final alpha enforcement, bouncer lifecycle, and lock-wallpaper loading.
+
 ## 0.1.2 — 2026-08-12
 
 ### Fixed
