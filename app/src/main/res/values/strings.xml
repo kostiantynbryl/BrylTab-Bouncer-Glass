@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BrylTab Bouncer Glass</string>
+    <string name="module_description">Android 16 SystemUI hook: 90% transparent PIN bouncer background with lockscreen content preserved.</string>
+</resources>
