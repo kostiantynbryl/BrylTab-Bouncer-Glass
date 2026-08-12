@@ -2,6 +2,15 @@
 
 All notable changes to BrylTab Bouncer Glass are documented here.
 
+## 0.1.2 — 2026-08-12
+
+### Fixed
+
+- Force `KeyguardSecurityContainer.mTransparentModeEnabled = true` on the target DOOGEE U10 Android 16 SystemUI.
+- Re-clear the container background whenever `reloadBackgroundColor()` runs.
+- Clear the first inflated container in `onFinishInflate()` so the opaque fallback cannot reappear before a configuration refresh.
+- Keep the v0.1.1 ScrimController and lockscreen-alpha hooks as secondary protection.
+
 ## 0.1.1 — 2026-08-12
 
 ### Fixed
