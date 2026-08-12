@@ -10,6 +10,7 @@ A narrowly scoped LSPosed/Vector module for the **DOOGEE U10 running Android 16*
 
 - Sets the PIN/security bouncer scrim to **10% opacity / 90% transparency**.
 - Keeps lockscreen content visible during the `LOCKSCREEN -> PRIMARY_BOUNCER` transition.
+- Enforces transparency at the final `ScrimController` rendering path so later SystemUI recalculation cannot restore an opaque layer.
 - Hooks **System UI only** (`com.android.systemui`).
 - Fails safely when a targeted class or field is not present.
 
@@ -19,13 +20,13 @@ The module does **not** modify PIN verification, GateKeeper, Keystore, biometric
 
 ## Target / compatibility
 
-This first release is intentionally device-specific. It was prepared against the supplied DOOGEE U10 Android 16 `SystemUI.apk`:
+This release is intentionally device-specific. It was prepared against the supplied DOOGEE U10 Android 16 `SystemUI.apk`:
 
 ```text
 SHA-256: a10283c5f977490641cc19c2f2601564b79608f2a803073d2f624a33b3b760e3
 ```
 
-Verified target classes in that build:
+Verified target paths in that build include:
 
 ```text
 com.android.systemui.statusbar.phone.ScrimState$3
@@ -33,6 +34,9 @@ com.android.systemui.statusbar.phone.ScrimState$3
 
 com.android.systemui.statusbar.phone.ScrimState$4
   -> BOUNCER_SCRIMMED
+
+com.android.systemui.statusbar.phone.ScrimController
+  -> applyState$1 / setScrimAlpha / updateScrimColor
 
 com.android.systemui.keyguard.ui.viewmodel.
 LockscreenToPrimaryBouncerTransitionViewModel$$ExternalSyntheticLambda0
@@ -46,7 +50,7 @@ Other Android 16 ROMs may use different SystemUI implementations or R8 output. D
 - Android 16
 - Root with Magisk-compatible Zygisk environment
 - LSPosed or Vector with legacy Xposed API compatibility
-- DOOGEE U10 SystemUI matching the target build above for the initial test release
+- DOOGEE U10 SystemUI matching the target build above for the current test release
 
 ## Install
 
@@ -59,6 +63,8 @@ Other Android 16 ROMs may use different SystemUI implementations or R8 output. D
 
 Expected behavior: the normal PIN keypad remains unchanged, while the lockscreen stays visible behind a light 10% dark scrim.
 
+When updating between CI debug builds, Android may report a signature conflict because a runner can use a different debug keystore. If that occurs, uninstall the previous BrylTab Bouncer Glass APK, install the new build, then re-enable its System UI scope in LSPosed/Vector.
+
 ## Recovery
 
 If SystemUI becomes unstable:
@@ -69,6 +75,16 @@ If SystemUI becomes unstable:
 The module never replaces `SystemUI.apk`, so disabling the hook restores stock behavior.
 
 For development devices, a bootloop protection module is strongly recommended before experimenting with SystemUI hooks.
+
+## Diagnostics
+
+Filter LSPosed/Vector logs for:
+
+```text
+BrylTabBouncerGlass
+```
+
+v0.1.1 logs whether the `ScrimState`, `ScrimController`, final `ScrimView` render hook and optional legacy bouncer fallback were reached.
 
 ## Build
 
@@ -103,11 +119,8 @@ app/src/main/AndroidManifest.xml                            Xposed metadata/scop
 
 ## Status
 
-**v0.1.0 — initial hardware test build.**
+**v0.1.1 — second hardware test build.**
 
-The first goal is to confirm two behaviors independently on the target tablet:
-
-1. bouncer scrim is reduced to 10% opacity;
-2. lockscreen clock/date content remains visible behind the PIN keypad.
+v0.1.0 proved that changing `ScrimState.prepare()` alone was insufficient on the target SystemUI because `ScrimController` recalculates the alpha later. v0.1.1 therefore enforces the limit again at the controller and final render paths.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for version history.
