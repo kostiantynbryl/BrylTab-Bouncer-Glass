@@ -44,16 +44,16 @@ jobs:
         run: |
           mkdir -p dist
           cp app/build/outputs/apk/debug/app-debug.apk \
-             dist/BrylTab-Bouncer-Glass-v0.1.1.apk
+             dist/BrylTab-Bouncer-Glass-v0.1.2.apk
           cd dist
-          sha256sum BrylTab-Bouncer-Glass-v0.1.1.apk \
-            > BrylTab-Bouncer-Glass-v0.1.1.apk.sha256
+          sha256sum BrylTab-Bouncer-Glass-v0.1.2.apk \
+            > BrylTab-Bouncer-Glass-v0.1.2.apk.sha256
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: BrylTab-Bouncer-Glass-v0.1.1
+          name: BrylTab-Bouncer-Glass-v0.1.2
           if-no-files-found: error
           path: |
-            dist/BrylTab-Bouncer-Glass-v0.1.1.apk
-            dist/BrylTab-Bouncer-Glass-v0.1.1.apk.sha256
+            dist/BrylTab-Bouncer-Glass-v0.1.2.apk
+            dist/BrylTab-Bouncer-Glass-v0.1.2.apk.sha256
